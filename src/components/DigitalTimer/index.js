@@ -2,10 +2,20 @@ import {Component} from 'react'
 import './index.css'
 
 class Calculator extends Component {
-  state = {ans: 0, firstValue: null, secondValue: null, func: null}
+  state = {
+    ans: 0,
+    firstValue: 0,
+    secondValue: null,
+    isFunctionStarted: false,
+    count: 0,
+    sign: '',
+    multiplyCount: 0,
+    divideCount: 0,
+  }
 
   buttonClicked = event => {
     let {ans} = this.state
+
     ans = ans.toString()
 
     if (ans[0] === '0') {
@@ -18,57 +28,143 @@ class Calculator extends Component {
 
   plusButtonClicked = () => {
     const {ans} = this.state
-    this.setState({ans: 0, firstValue: parseInt(ans)})
-    this.setState({func: '+'})
+
+    this.setState(prevState => ({
+      firstValue: prevState.firstValue + parseFloat(ans),
+      ans: 0,
+      sign: '+',
+      isFunctionStarted: false,
+    }))
   }
 
   minusButtonClicked = () => {
-    const {ans} = this.state
-    this.setState({ans: 0, firstValue: parseInt(ans)})
-    this.setState({func: '-'})
+    const {count} = this.state
+    if (count === 0) {
+      let {ans} = this.state
+      ans = parseFloat(ans)
+      this.setState(prevState => ({
+        ans: 0,
+        firstValue: ans,
+        count: prevState.count + 1,
+        sign: '-',
+        isFunctionStarted: false,
+      }))
+    } else {
+      let {ans} = this.state
+
+      ans = parseFloat(ans)
+      this.setState(prevState => ({
+        firstValue: prevState.firstValue - ans,
+        count: prevState.count + 1,
+        ans: 0,
+        sign: '-',
+        isFunctionStarted: false,
+      }))
+    }
   }
 
   intoButtonClicked = () => {
-    const {ans} = this.state
-    this.setState({ans: 0, firstValue: parseInt(ans)})
-    this.setState({func: '*'})
+    const {multiplyCount} = this.state
+    if (multiplyCount === 0) {
+      let {ans} = this.state
+      ans = parseFloat(ans)
+      this.setState(prevState => ({
+        ans: 0,
+        firstValue: ans,
+        multiplyCount: prevState.multiplyCount + 1,
+        sign: '*',
+        isFunctionStarted: false,
+      }))
+    } else {
+      let {ans} = this.state
+      ans = parseFloat(ans)
+      this.setState(prevState => ({
+        firstValue: prevState.firstValue * ans,
+        multiplyCount: prevState.multiplyCount + 1,
+        ans: 0,
+        sign: '*',
+        isFunctionStarted: false,
+      }))
+    }
   }
 
   dividedButtonClicked = () => {
-    const {ans} = this.state
-    this.setState({ans: 0, firstValue: parseInt(ans)})
-    this.setState({func: '/'})
+    const {divideCount} = this.state
+    if (divideCount === 0) {
+      let {ans} = this.state
+      ans = parseFloat(ans)
+      this.setState(prevState => ({
+        ans: 0,
+        firstValue: ans,
+        divideCount: prevState.divideCount + 1,
+        sign: '/',
+        isFunctionStarted: false,
+      }))
+    } else {
+      let {ans} = this.state
+      ans = parseFloat(ans)
+      this.setState(prevState => ({
+        firstValue: prevState.firstValue / ans,
+        divideCount: prevState.divideCount + 1,
+        ans: 0,
+        sign: '/',
+        isFunctionStarted: false,
+      }))
+    }
   }
 
   equalsButtonClicked = () => {
-    const {ans} = this.state
-    this.setState({secondValue: parseInt(ans)})
-    this.setState({ans: 0})
+    const {ans, sign} = this.state
+    if (sign === '+') {
+      this.setState(prevState => ({
+        firstValue: prevState.firstValue + parseFloat(ans),
+      }))
+      this.setState({isFunctionStarted: true})
+      this.setState({ans: 0})
+    } else if (sign === '-') {
+      this.setState(prevState => ({
+        firstValue: prevState.firstValue - parseFloat(ans),
+      }))
+      this.setState({isFunctionStarted: true})
+      this.setState({ans: 0})
+    } else if (sign === '*') {
+      this.setState(prevState => ({
+        firstValue: prevState.firstValue * parseFloat(ans),
+      }))
+      this.setState({isFunctionStarted: true})
+      this.setState({ans: 0})
+    } else if (sign === '/') {
+      this.setState(prevState => ({
+        firstValue: prevState.firstValue / parseFloat(ans),
+      }))
+      this.setState({isFunctionStarted: true})
+      this.setState({ans: 0})
+    }
+    this.setState({isFunctionStarted: true})
   }
 
   clearButtonClicked = () => {
-    this.setState({ans: 0, firstValue: null, secondValue: null, func: null})
+    this.setState({
+      ans: 0,
+      firstValue: 0,
+      secondValue: null,
+      isFunctionStarted: false,
+      sign: '',
+      count: 0,
+      multiplyCount: 0,
+      divideCount: 0,
+    })
   }
 
   render() {
-    const {firstValue, secondValue, func} = this.state
-    let {ans} = this.state
-    if (secondValue !== null) {
-      if (func === '+') {
-        ans = firstValue + secondValue
-      } else if (func === '-') {
-        ans = firstValue - secondValue
-      } else if (func === '*') {
-        ans = firstValue * secondValue
-      } else if (func === '/') {
-        ans = firstValue / secondValue
-      }
-    }
+    const {firstValue, secondValue, ans, isFunctionStarted} = this.state
 
     return (
       <div className="bg">
         <div className="cal-container">
-          <p className="result-container">{ans}</p>
+          <p className="result-container">
+            {isFunctionStarted ? firstValue : ans}
+          </p>
           <div className="buttons-container">
             <button
               type="button"
