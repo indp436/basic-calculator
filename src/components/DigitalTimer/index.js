@@ -5,7 +5,6 @@ class Calculator extends Component {
   state = {
     ans: 0,
     firstValue: 0,
-    secondValue: null,
     isFunctionStarted: false,
     count: 0,
     sign: '',
@@ -65,6 +64,7 @@ class Calculator extends Component {
 
   intoButtonClicked = () => {
     const {multiplyCount} = this.state
+    console.log(multiplyCount)
     if (multiplyCount === 0) {
       let {ans} = this.state
       ans = parseFloat(ans)
@@ -115,6 +115,10 @@ class Calculator extends Component {
 
   equalsButtonClicked = () => {
     const {ans, sign} = this.state
+    this.setState(prevState => ({
+      count: prevState.count + 1,
+      divideCount: prevState.divideCount + 1,
+    }))
     if (sign === '+') {
       this.setState(prevState => ({
         firstValue: prevState.firstValue + parseFloat(ans),
@@ -140,14 +144,12 @@ class Calculator extends Component {
       this.setState({isFunctionStarted: true})
       this.setState({ans: 0})
     }
-    this.setState({isFunctionStarted: true})
   }
 
   clearButtonClicked = () => {
     this.setState({
       ans: 0,
       firstValue: 0,
-      secondValue: null,
       isFunctionStarted: false,
       sign: '',
       count: 0,
@@ -157,7 +159,8 @@ class Calculator extends Component {
   }
 
   render() {
-    const {firstValue, secondValue, ans, isFunctionStarted} = this.state
+    const {firstValue, ans, isFunctionStarted} = this.state
+    // console.log(firstValue)
 
     return (
       <div className="bg">
