@@ -20,9 +20,12 @@ class Calculator extends Component {
     if (ans[0] === '0') {
       ans = ans.substring(1)
     }
-    this.setState(prevState => ({
+     if (ans[0] === '.') {
+      ans = ans.replace(/^/, '0')
+    }
+    this.setState({
       ans: ans + event.target.value,
-    }))
+    })
   }
 
   plusButtonClicked = () => {
